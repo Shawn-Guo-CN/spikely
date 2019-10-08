@@ -11,9 +11,7 @@ modules whose methods are called in response to user interactions with the UI.
 import sys
 
 import pkg_resources
-import PyQt5.QtCore as qc
-import PyQt5.QtGui as qg
-import PyQt5.QtWidgets as qw
+from PyQt5 import QtWidgets, QtCore, QtGui
 
 from . import file_menu, help_menu
 from . import operation_view as sp_opv
@@ -24,7 +22,7 @@ from . import pipeline_view as sp_piv
 from . import tool_bar, version
 
 
-class SpikelyMainWindow(qw.QMainWindow):
+class SpikelyMainWindow(QtWidgets.QMainWindow):
     # Parent UI for application delegates to subwindow views/models
     def __init__(self):
         super().__init__()
@@ -42,13 +40,13 @@ class SpikelyMainWindow(qw.QMainWindow):
         try:
             spikely_png_path = pkg_resources.resource_filename(
                 'spikely.resources', 'spikely.png')
-            self.setWindowIcon(qg.QIcon(spikely_png_path))
+            self.setWindowIcon(QtGui.QIcon(spikely_png_path))
         except KeyError:
             print('<<spikely error: Failed to find spikely.png in resource '
                   'directory>>', file=sys.stderr)
 
         self.statusBar().addPermanentWidget(
-            qw.QLabel("Version " + version.__version__))
+            QtWidgets.QLabel("Version " + version.__version__))
 
         menu_bar = self.menuBar()
         menu_bar.addMenu(file_menu.create_file_menu(self,
@@ -56,13 +54,13 @@ class SpikelyMainWindow(qw.QMainWindow):
         menu_bar.addMenu(help_menu.create_help_menu(self))
 
         bar = tool_bar.create_tool_bar(self)
-        self.addToolBar(qc.Qt.RightToolBarArea, bar)
+        self.addToolBar(QtCore.Qt.RightToolBarArea, bar)
 
-        main_frame = qw.QFrame()
+        main_frame = QtWidgets.QFrame()
         self.setCentralWidget(main_frame)
-        main_frame.setLayout(qw.QVBoxLayout())
+        main_frame.setLayout(QtWidgets.QVBoxLayout())
 
-        pipe_param_splitter = qw.QSplitter()
+        pipe_param_splitter = QtWidgets.QSplitter()
         pipe_param_splitter.setChildrenCollapsible(False)
 
         # Subwindows for element pipeline and current element parameters
@@ -79,7 +77,7 @@ class SpikelyMainWindow(qw.QMainWindow):
 
 
 def launch_spikely():
-    app = qw.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     win = SpikelyMainWindow()
     win.show()
     sys.exit(app.exec_())
